@@ -2,6 +2,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Cemiterio\PeopleController;
 use App\Http\Controllers\PostController;
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,14 @@ Route::group(['prefix' => 'cemiterio', 'middleware' => ['cors', 'json.response']
         });
     });
     
-    Route::group(['middleware' => 'auth:api'], function () {
+    
+    Route::group(['prefix' => 'people'], function(){
+        Route::group(['middleware' => 'auth:api'], function () {
+            Route::post('/', [PeopleController::class, 'store']);
+            Route::post('/{personId}/update', [PeopleController::class, 'update']);
+            Route::delete('/{personId}/delete', [PeopleController::class, 'destroy']);
+        });
+        Route::get('/', [PeopleController::class, 'index']);
+        Route::get('/{personId}', [PeopleController::class, 'show']);
     });
 });
