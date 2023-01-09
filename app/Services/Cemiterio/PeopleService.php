@@ -28,7 +28,7 @@ class PeopleService
     
     public static function update(array $params)
     {
-        $person = People::where('personId', '=', $params['personId'])->first();
+        $person = People::where('personId', '=', $params['personId'])->firstOrFail();
         unset($params['personId']);
         $person->fill($params);
         return $person->save();
@@ -36,7 +36,7 @@ class PeopleService
 
     public function destroy(int $personId)
     {
-        $query = People::where('personId', '=', $personId);
+        $query = People::where('personId', '=', $personId)->firstOrFail();
 
         return $query->delete();
     }
