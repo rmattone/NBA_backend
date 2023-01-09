@@ -88,10 +88,10 @@ class PeopleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(People $person)
+    public function destroy(int $personId)
     {
         try {
-            // $people = $this->listPeople->listPeople();
+            $delete = $this->peopleService->destroy($personId);
             return $this->success(true);
         } catch (\Throwable $th) {
             return $this->error($th->getMessage());

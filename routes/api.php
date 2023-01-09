@@ -28,7 +28,7 @@ Route::group(['prefix' => 'cemiterio', 'middleware' => ['cors', 'json.response']
         Route::group(['middleware' => 'auth:api'], function () {
             Route::post('/', [PeopleController::class, 'store']);
             Route::post('/{personId}/update', [PeopleController::class, 'update']);
-            Route::delete('/{personId}/delete', [PeopleController::class, 'destroy']);
+            Route::delete('/{personId}', [PeopleController::class, 'destroy']);
         });
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/{personId}', [PeopleController::class, 'show']);

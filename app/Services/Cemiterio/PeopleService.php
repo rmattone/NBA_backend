@@ -13,7 +13,7 @@ class PeopleService
         return $query->get();
     }
 
-    public static function show($personId)
+    public static function show(int $personId)
     {
         $query = People::where('personId', '=', $personId);
 
@@ -32,5 +32,12 @@ class PeopleService
         unset($params['personId']);
         $person->fill($params);
         return $person->save();
+    }
+
+    public function destroy(int $personId)
+    {
+        $query = People::where('personId', '=', $personId);
+
+        return $query->delete();
     }
 }
