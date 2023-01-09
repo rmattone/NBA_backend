@@ -2,12 +2,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterUserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 class AuthController extends Controller
 {
 
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
         $this->validate($request, [
             'name' => 'required|min:4',
@@ -27,7 +29,7 @@ class AuthController extends Controller
     }
  
     
-    public function loginCemiterio(Request $request)
+    public function loginCemiterio(LoginRequest $request)
     {
         $data = [
             'email' => $request->email,
