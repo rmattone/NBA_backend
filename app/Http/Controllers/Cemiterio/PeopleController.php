@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Cemiterio;
 
+use App\Helpers\PeopleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePersonRequest;
+use App\Http\Requests\People\ListPeopleRequest;
 use App\Http\Requests\UpdatePersonRequest;
 use App\Models\People;
 use App\Services\Cemiterio\ListPeopleService;
@@ -13,9 +15,14 @@ use Illuminate\Http\Request;
 class PeopleController extends Controller
 {
     protected $peopleService;
+    protected $peopleHelper;
 
-    public function __construct(PeopleService $peopleService) {
+    public function __construct(
+        PeopleService $peopleService,
+        PeopleHelper $peopleHelper
+        ) {
         $this->peopleService = $peopleService;
+        $this->peopleHelper = $peopleHelper;
     }
 
     /**
@@ -23,10 +30,10 @@ class PeopleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ListPeopleRequest $request)
     {
         try {
-            $people = $this->peopleService->listPeople();
+            $people = $this->peopleHelper->listPeople($request->validated());
             return $this->success($people);
         } catch (\Throwable $th) {
             return $this->error($th->getMessage());
@@ -72,7 +79,7 @@ class PeopleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePersonRequest $request, $id)
+    public function update(UpdatePersonRequest $request)
     {
         try {
             $update = $this->peopleService->update($request->validated());
@@ -91,7 +98,7 @@ class PeopleController extends Controller
     public function destroy(int $personId)
     {
         try {
-            $delete = $this->peopleService->destroy($personId);
+            // $delete = $this->peopleService->destroy($personId);
             return $this->success(true);
         } catch (\Throwable $th) {
             return $this->error($th->getMessage());

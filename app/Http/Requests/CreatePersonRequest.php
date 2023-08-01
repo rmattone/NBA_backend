@@ -24,8 +24,8 @@ class CreatePersonRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string'],
-            'birth' => ['nullable','string', 'max:10'],
+            'name' => ['nullable', 'string'],
+            'birth' => ['nullable', 'string', 'max:10'],
             'death' => ['nullable', 'string', 'max:10'],
             'description' => ['nullable', 'string'],
             'photo' => ['nullable', 'file'],

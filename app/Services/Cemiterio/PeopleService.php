@@ -2,42 +2,70 @@
 
 namespace App\Services\Cemiterio;
 
+use App\Helpers\FileHelper;
 use App\Models\People;
+use Carbon\Carbon;
 
 class PeopleService
 {
-    public static function listPeople()
+    public function listPeople(array $params)
     {
-        $query = People::query();
+        $query = People::query()
+            ->orderBy('name')
+            ->when(isset($params), function ($q) use ($params) {
+                $q->where('name', 'like', '%'.$params['query'].'%');
+            });
 
         return $query->get();
     }
 
-    public static function show(int $personId)
+    public function show(int $personId)
     {
         $query = People::where('personId', '=', $personId);
 
         return $query->get();
     }
 
-    public static function store(array $params)
+    public function store(array $params)
     {
         $person = new People($params);
+        $data = [
+            "name" => $params['name'],
+            'birth' => isset($params['birth']) ? $this->prepareDateMerge($params['birth']) : null,
+            'death' => isset($params['death']) ? $this->prepareDateMerge($params['death']) : null,
+            "description" => $params['description'],
+            "birthPlace" => $params['birthPlace'],
+            "address" => $params['address'],
+        ];
+        if (isset($params['photo'])) {
+            $data['photo'] = FileHelper::fileToBase64($params['photo']);
+        }
+        $person->fill($data);
+        
         return $person->save();
     }
-    
-    public static function update(array $params)
+
+    public function update(array $params)
     {
+        $data = [
+            "name" => $params['name'],
+            'birth' => isset($params['birth']) ? $this->prepareDateMerge($params['birth']) : null,
+            'death' => isset($params['death']) ? $this->prepareDateMerge($params['death']) : null,
+            "description" => $params['description'],
+            "birthPlace" => $params['birthPlace'],
+            "address" => $params['address'],
+        ];
+        if (isset($params['photo'])) {
+            $data['photo'] = FileHelper::fileToBase64($params['photo']);
+        }
         $person = People::where('personId', '=', $params['personId'])->firstOrFail();
-        unset($params['personId']);
-        $person->fill($params);
+
+        $person->fill($data);
         return $person->save();
     }
 
-    public function destroy(int $personId)
+    private function prepareDateMerge($date)
     {
-        $query = People::where('personId', '=', $personId)->firstOrFail();
-
-        return $query->delete();
+        return Carbon::createFromFormat('d/m/Y',  $date)->format('Y-m-d');
     }
 }
