@@ -12,7 +12,7 @@ class PeopleService
     {
         $query = People::query()
             ->orderBy('name')
-            ->when(isset($params), function ($q) use ($params) {
+            ->when(isset($params['query']), function ($q) use ($params) {
                 $q->where('name', 'like', '%'.$params['query'].'%');
             });
 
