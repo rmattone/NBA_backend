@@ -33,6 +33,7 @@ class NBATeamsService
             ->with([
                 'teamStats'
             ])
+            ->orderBy('date', 'desc')
             ->get();
         return $teamStats;
     }
