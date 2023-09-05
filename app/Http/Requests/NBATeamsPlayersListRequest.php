@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\People;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ListPeopleRequest extends FormRequest
+class NBATeamsPlayersListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,7 @@ class ListPeopleRequest extends FormRequest
     public function rules()
     {
         return [
-            'page' => ['nullable', 'int'],
-            'perPage' => ['nullable','int'],
-            'query' => ['nullable', 'string']
+            'playerName' => ['nullable', 'string']
         ];
     }
 }
