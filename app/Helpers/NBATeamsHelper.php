@@ -86,7 +86,6 @@ class NBATeamsHelper
                 $description = explode(' ', $firstTry->$isHost);
                 return $description[0] == 'MISS' ? $description[1] : $description[0];
             } catch (\Throwable $th) {
-                dd($game);
                 return null;
             }
         });
