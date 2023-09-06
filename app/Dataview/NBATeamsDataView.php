@@ -25,6 +25,7 @@ class NBATeamsDataView
             'tricode' => $team->tricode,
             'slug' => $team->slug,
             'nbaTeamId' => $team->nbaTeamId,
+            'color' => $team->color
         ];
     }
 

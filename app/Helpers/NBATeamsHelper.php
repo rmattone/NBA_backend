@@ -47,7 +47,7 @@ class NBATeamsHelper
         $teamData = array_merge(
             $this->nbaTeamsDataView->listTeam($team),
             $this->listFirstAttempt($games, $roster, $team->nbaTeamId),
-            $this->listGamesStats($games->slice(0,5)),
+            $this->listGamesStats($games->slice(0, 5)),
             $roster
         );
         return $teamData;
@@ -75,48 +75,58 @@ class NBATeamsHelper
             return $player['familyName'];
         })->toArray();
         $playByPlay = $games->map(function ($game) use ($playersName, $nbaTeamId) {
-                $isHost = $game->teamStats->filter(function ($team) use ($nbaTeamId) {
-                    return $team->teamId == $nbaTeamId;
-                })->first()->host ? 'homeDescription' : 'visitorDescription';
-            $firstTry = $game->playByPlay->slice(0,10)->filter(function ($possesion) use ($playersName, $isHost) {
+            $isHost = $game->teamStats->filter(function ($team) use ($nbaTeamId) {
+                return $team->teamId == $nbaTeamId;
+            })->first()->host ? 'homeDescription' : 'visitorDescription';
+            $firstTry = $game->playByPlay->slice(0, 10)->filter(function ($possesion) use ($playersName, $isHost) {
                 $fistWord = !is_null($possesion->$isHost) ? explode(' ', $possesion->$isHost)[0] : null;
                 return (in_array($fistWord, $playersName) || $fistWord == 'MISS') && !is_null($fistWord);
             })->first();
             try {
                 $description = explode(' ', $firstTry->$isHost);
-                return $description[0] == 'MISS' ? $description[1] : $description[0];
+                return $description[0] == 'MISS' ? [$description[1], false] : [$description[0], true];
             } catch (\Throwable $th) {
                 return null;
             }
         });
 
         $firstBasket = [
-            'firstAttempts' => $this->contarNomes($playByPlay->toArray())
+            'firstAttempts' => $this->countNames($playByPlay->toArray())
         ];
         return $firstBasket;
     }
 
-    function contarNomes($listaNomes) {
-        $contagemNomes = [];
-    
-        foreach ($listaNomes as $nome) {
-            if (isset($contagemNomes[$nome])) {
-                $contagemNomes[$nome]++;
-            } else {
-                $contagemNomes[$nome] = 1;
+    function countNames($nameList)
+    {
+        $nameCounts = [];
+
+        foreach ($nameList as [$name, $fgMade]) {
+            if ($name !== null && $name !== "") {
+                if (isset($nameCounts[$name])) {
+                    $nameCounts[$name]['fgAttempted']++;
+                    if ($fgMade) {
+                        $nameCounts[$name]['fgMade']++;
+                    }
+                } else {
+                    $nameCounts[$name] = ['fgAttempted' => 1, 'fgMade' => $fgMade ? 1 : 0];
+                }
             }
         }
-    
-        $resultado = [];
-        foreach ($contagemNomes as $nome => $vezes) {
-            $resultado[] = ["name" => $nome, "times" => $vezes];
+
+        $result = [];
+        foreach ($nameCounts as $name => $data) {
+            $result[] = [
+                "name" => $name,
+                "fgMade" => $data['fgMade'],
+                "fgAttempted" => $data['fgAttempted']
+            ];
         }
-    
-        // Ordenar o resultado pelo número de vezes (em ordem decrescente)
-        usort($resultado, function ($a, $b) {
-            return $b['times'] - $a['times'];
+
+        // Sort the result by 'fgMade' in descending order
+        usort($result, function ($a, $b) {
+            return $b['fgMade'] - $a['fgMade'];
         });
-    
-        return $resultado;
+
+        return $result;
     }
 }
