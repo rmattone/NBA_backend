@@ -24,7 +24,10 @@ class NBATeamsInfosRequest extends FormRequest
     public function rules()
     {
         return [
-            'teamId' => ['required', 'int']
+            'teamId' => ['required', 'int'],
+            'startDate' => ['nullable', 'date'],
+            'endDate' => ['nullable', 'date'],
+            'nLastGames' => ['nullable', 'int']
         ];
     }
 

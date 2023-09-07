@@ -30,6 +30,7 @@ class Controller extends BaseController
     {
         $message = !$message ? "Unknown error" : $message;
 
+        app()->log->error($message, $context);
         $response = [
             'message' => $message
         ];

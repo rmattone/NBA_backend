@@ -33,6 +33,15 @@ class NBATeamsService
             ->with([
                 'teamStats'
             ])
+            ->when(isset($params['startDate']), function($query) use($params){
+                $query->where('date', '>=', $params['startDate']);
+            })
+            ->when(isset($params['endDate']), function($query) use($params){
+                $query->where('date', '<=', $params['endDate']);
+            })
+            ->when(isset($params['nLastGames']), function($query) use($params){
+                $query->limit($params['nLastGames']);
+            })
             ->orderBy('date', 'desc')
             ->get();
         return $teamStats;

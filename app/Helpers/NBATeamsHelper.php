@@ -6,6 +6,7 @@ use App\DataView\NBATeamsDataView;
 use App\Models\NBAPlayByPlay;
 use App\Models\NBATeam;
 use App\Services\NBATeamsService;
+use Carbon\Carbon;
 
 class NBATeamsHelper
 {
@@ -42,12 +43,12 @@ class NBATeamsHelper
     public function listAllInfos(array $params)
     {
         $team = NBATeam::find($params['teamId']);
-        $games = $this->nbaTeamsService->games($team);
+        $games = $this->nbaTeamsService->games($team, $params);
         $roster = $this->nbaTeamsDataView->listTeamPlayers($team);
         $teamData = array_merge(
             $this->nbaTeamsDataView->listTeam($team),
             $this->listFirstAttempt($games, $roster, $team->nbaTeamId),
-            $this->listGamesStats($games->slice(0, 5)),
+            $this->listGamesStats($games),
             $roster
         );
         return $teamData;
@@ -61,7 +62,7 @@ class NBATeamsHelper
             $listGames['games'][] = [
                 'info' => [
                     'gameId' => $game->gameId,
-                    'date' => $game->date
+                    'date' => Carbon::parse($game->date)->format('d/m/Y')
                 ],
                 'teamStats' => $gameStats
             ];
@@ -129,4 +130,5 @@ class NBATeamsHelper
 
         return $result;
     }
+    
 }
