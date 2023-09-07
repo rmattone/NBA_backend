@@ -27,7 +27,9 @@ class NBATeamsInfosRequest extends FormRequest
             'teamId' => ['required', 'int'],
             'startDate' => ['nullable', 'date'],
             'endDate' => ['nullable', 'date'],
-            'nLastGames' => ['nullable', 'int']
+            'nLastGames' => ['nullable', 'int'],
+            'opponentTeamId' => ['nullable', 'int'],
+            'host' => ['nullable', 'boolean'],
         ];
     }
 
