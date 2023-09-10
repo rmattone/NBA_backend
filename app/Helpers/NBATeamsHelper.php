@@ -48,17 +48,37 @@ class NBATeamsHelper
         $teamData = array_merge(
             $this->nbaTeamsDataView->listTeam($team),
             $this->listFirstAttempt($games, $roster, $team->nbaTeamId),
-            $this->listGamesStats($games),
+            $this->listGamesStats($games, $team->nbaTeamId),
             $roster
         );
         return $teamData;
     }
 
-    public function listGamesStats($games)
+    public function listGamesStats($games, $teamId)
     {
-        $listGames = ['games' => []];
+        $listGames = [
+            'games' => [],
+            'statistics' => []
+        ];
+        $points = [];
+        $plusMinusPoints = [];
+        $blocks = [];
+        $steals = [];
+        $reboundsTotal = [];
+        $turnovers = [];
         foreach ($games as $game) {
             $gameStats = $this->nbaTeamsDataView->teamStats($game->teamStats);
+            $team = $gameStats->filter(function ($teamStat) use ($teamId) {
+                return $teamStat['teamId'] == $teamId;
+            })->first();
+
+            $points[] = $team['points'];
+            $plusMinusPoints[] = $team['plusMinusPoints'];
+            $blocks[] = $team['blocks'];
+            $steals[] = $team['steals'];
+            $reboundsTotal[] = $team['reboundsTotal'];
+            $turnovers[] = $team['turnovers'];
+
             $listGames['games'][] = [
                 'info' => [
                     'gameId' => $game->gameId,
@@ -67,8 +87,63 @@ class NBATeamsHelper
                 'teamStats' => $gameStats
             ];
         }
+
+        $listGames['statistics'] = [
+            'Points' => [
+                'min' => min($points),
+                'max' => max($points),
+                'avg' => round(array_sum($points)/count($points), 1),
+            ],
+            'Plus/Minus Points' => [
+                'min' => min($plusMinusPoints),
+                'max' => max($plusMinusPoints),
+                // 'avg' => round(array_sum($plusMinusPoints)/count($plusMinusPoints), 1),
+                'avg' => round($this->standDeviation($plusMinusPoints), 1),
+            ],
+            'Blocks' => [
+                'min' => min($blocks),
+                'max' => max($blocks),
+                'avg' => round(array_sum($blocks)/count($blocks), 1),
+            ],
+            'Steals' => [
+                'min' => min($steals),
+                'max' => max($steals),
+                'avg' => round(array_sum($steals)/count($steals), 1),
+            ],
+            'Rebounds' => [
+                'min' => min($reboundsTotal),
+                'max' => max($reboundsTotal),
+                'avg' => round(array_sum($reboundsTotal)/count($reboundsTotal), 1),
+            ],
+            'Turnovers' => [
+                'min' => min($turnovers),
+                'max' => max($turnovers),
+                'avg' => round(array_sum($turnovers)/count($turnovers), 1),
+            ],
+        ];
+
         return $listGames;
     }
+
+    function standDeviation($arr)
+    {
+        $num_of_elements = count($arr);
+          
+        $variance = 0.0;
+          
+                // calculating mean using array_sum() method
+        $average = array_sum($arr)/$num_of_elements;
+          
+        foreach($arr as $i)
+        {
+            // sum of squares of differences between 
+                        // all numbers and means.
+            $variance += pow(($i - $average), 2);
+        }
+          
+        return (float)sqrt($variance/$num_of_elements);
+    }
+
 
     public function listFirstAttempt($games, $roster, $nbaTeamId)
     {
@@ -130,5 +205,4 @@ class NBATeamsHelper
 
         return $result;
     }
-    
 }

@@ -10,7 +10,7 @@ class UserDataView
     public function getInfo(User $user)
     {
         return [
-            'id' => $user->userId,
+            'id' => $user->id,
             'name' => $user->name,
             'roles' => ['admin'],
         ];
