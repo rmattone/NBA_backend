@@ -78,6 +78,8 @@ class NBATeamsHelper
             $steals[] = $team['steals'];
             $reboundsTotal[] = $team['reboundsTotal'];
             $turnovers[] = $team['turnovers'];
+            $dates[] = Carbon::parse($game->date)->format('d/m');
+
 
             $listGames['games'][] = [
                 'info' => [
@@ -89,10 +91,12 @@ class NBATeamsHelper
         }
 
         $listGames['statistics'] = [
+            'dates' => array_reverse($dates),
             'Points' => [
+                'data' => array_reverse($points),
                 'min' => min($points),
                 'max' => max($points),
-                'avg' => round(array_sum($points)/count($points), 1),
+                'avg' => round(array_sum($points) / count($points), 1),
             ],
             'Plus/Minus Points' => [
                 'min' => min($plusMinusPoints),
@@ -103,22 +107,22 @@ class NBATeamsHelper
             'Blocks' => [
                 'min' => min($blocks),
                 'max' => max($blocks),
-                'avg' => round(array_sum($blocks)/count($blocks), 1),
+                'avg' => round(array_sum($blocks) / count($blocks), 1),
             ],
             'Steals' => [
                 'min' => min($steals),
                 'max' => max($steals),
-                'avg' => round(array_sum($steals)/count($steals), 1),
+                'avg' => round(array_sum($steals) / count($steals), 1),
             ],
             'Rebounds' => [
                 'min' => min($reboundsTotal),
                 'max' => max($reboundsTotal),
-                'avg' => round(array_sum($reboundsTotal)/count($reboundsTotal), 1),
+                'avg' => round(array_sum($reboundsTotal) / count($reboundsTotal), 1),
             ],
             'Turnovers' => [
                 'min' => min($turnovers),
                 'max' => max($turnovers),
-                'avg' => round(array_sum($turnovers)/count($turnovers), 1),
+                'avg' => round(array_sum($turnovers) / count($turnovers), 1),
             ],
         ];
 
@@ -128,20 +132,19 @@ class NBATeamsHelper
     function standDeviation($arr)
     {
         $num_of_elements = count($arr);
-          
+
         $variance = 0.0;
-          
-                // calculating mean using array_sum() method
-        $average = array_sum($arr)/$num_of_elements;
-          
-        foreach($arr as $i)
-        {
+
+        // calculating mean using array_sum() method
+        $average = array_sum($arr) / $num_of_elements;
+
+        foreach ($arr as $i) {
             // sum of squares of differences between 
-                        // all numbers and means.
+            // all numbers and means.
             $variance += pow(($i - $average), 2);
         }
-          
-        return (float)sqrt($variance/$num_of_elements);
+
+        return (float)sqrt($variance / $num_of_elements);
     }
 
 
