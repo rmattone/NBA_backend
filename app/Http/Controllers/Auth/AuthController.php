@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Mail\TestEmail;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Message;
 
 class AuthController extends Controller
 {
@@ -59,5 +62,17 @@ class AuthController extends Controller
         $token->revoke();
         $response = ['message' => 'You have been successfully logged out!'];
         return response($response, 200);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            Mail::to('rafaelfmattone@gmail.com', 'Nome do Destinatário')
+                        ->send(new TestEmail());
+            return $this->success('Email enviado com sucesso');
+        } catch (\Throwable $th) {
+            dd($th);
+            return $this->error($th->getMessage());
+        }
     }
 }

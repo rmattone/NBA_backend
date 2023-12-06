@@ -11,13 +11,13 @@ class NBATeamsService
 {
     public function listTeams(array $params)
     {
-
         $teams = NBATeam::query()
             ->when(isset($params['playerName']), function ($query) use ($params) {
                 $query->whereHas('players', function ($q) use ($params) {
                     $q->where('firstName', 'like', '%' . $params['playerName'] . '%')
-                        ->orWhere('familyName', 'like', '%' . $params['playerName'] . '%');
-                })->orderBy('familyName');
+                        ->orWhere('familyName', 'like', '%' . $params['playerName'] . '%')
+                        ->orderBy('familyName');
+                });
             })
             ->orderBy('city')
             ->get();
@@ -50,6 +50,9 @@ class NBATeamsService
             })
             ->when(isset($params['nLastGames']), function ($query) use ($params) {
                 $query->limit($params['nLastGames']);
+            })
+            ->when(isset($params['seasonType']), function ($query) use ($params) {
+                $query->where('seasonType', '=', $params['seasonType']);
             })
             ->orderBy('date', 'desc')
             ->get();

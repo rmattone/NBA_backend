@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class NBATeamsInfosRequest extends FormRequest
+class NBACustomFirstBucketsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,18 +24,8 @@ class NBATeamsInfosRequest extends FormRequest
     public function rules()
     {
         return [
-            'teamId' => ['required', 'int'],
-            'startDate' => ['nullable', 'date'],
-            'endDate' => ['nullable', 'date'],
-            'nLastGames' => ['nullable', 'int'],
-            'opponentTeamId' => ['nullable', 'int'],
-            'host' => ['nullable', 'boolean'],
+            'teamsId' => ['required', 'string'],
             'seasonType' => ['nullable', 'string']
         ];
-    }
-
-    protected function prepareForValidation()
-    {
-        $this->merge(['teamId' => (int) $this->route('teamId')]);
     }
 }

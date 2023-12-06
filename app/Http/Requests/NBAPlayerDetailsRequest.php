@@ -25,7 +25,8 @@ class NBAPlayerDetailsRequest extends FormRequest
     {
         return [
             'playerId' => ['required', 'int'],
-            'opponentTeamId' => ['nullable', 'int']
+            'opponentTeamId' => ['nullable', 'int'],
+            'seasonType' => ['nullable', 'string'],
         ];
     }
 

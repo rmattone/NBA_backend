@@ -82,7 +82,8 @@ class NBATeamsHelper
             $listGames['games'][] = [
                 'info' => [
                     'gameId' => $game->gameId,
-                    'date' => Carbon::parse($game->date)->format('d/m/Y')
+                    'date' => Carbon::parse($game->date)->format('d/m/Y'),
+                    'seasonType' => $game->seasonType
                 ],
                 'teamStats' => $gameStats
             ];
@@ -90,35 +91,35 @@ class NBATeamsHelper
 
         $listGames['statistics'] = [
             'Points' => [
-                'min' => min($points),
-                'max' => max($points),
-                'avg' => round(array_sum($points)/count($points), 1),
+                'min' =>$points ? min($points) : 0,
+                'max' => $points ? max($points) : 0,
+                'avg' => $points ? round(array_sum($points)/count($points), 1) : 0,
             ],
             'Plus/Minus Points' => [
-                'min' => min($plusMinusPoints),
-                'max' => max($plusMinusPoints),
+                'min' => $points ? min($plusMinusPoints) : 0,
+                'max' => $points ? max($plusMinusPoints) :0 ,
                 // 'avg' => round(array_sum($plusMinusPoints)/count($plusMinusPoints), 1),
-                'avg' => round($this->standDeviation($plusMinusPoints), 1),
+                'avg' => $points ? round($this->standDeviation($plusMinusPoints), 1) : 0,
             ],
             'Blocks' => [
-                'min' => min($blocks),
-                'max' => max($blocks),
-                'avg' => round(array_sum($blocks)/count($blocks), 1),
+                'min' => $points ? min($blocks) : 0,
+                'max' => $points ? max($blocks) : 0,
+                'avg' => $points ? round(array_sum($blocks)/count($blocks), 1) : 0,
             ],
             'Steals' => [
-                'min' => min($steals),
-                'max' => max($steals),
-                'avg' => round(array_sum($steals)/count($steals), 1),
+                'min' => $points ? min($steals) : 0,
+                'max' => $points ? max($steals) : 0,
+                'avg' => $points ? round(array_sum($steals)/count($steals), 1) : 0,
             ],
             'Rebounds' => [
-                'min' => min($reboundsTotal),
-                'max' => max($reboundsTotal),
-                'avg' => round(array_sum($reboundsTotal)/count($reboundsTotal), 1),
+                'min' => $points ? min($reboundsTotal) : 0,
+                'max' => $points ? max($reboundsTotal) : 0,
+                'avg' => $points ? round(array_sum($reboundsTotal)/count($reboundsTotal), 1) : 0,
             ],
             'Turnovers' => [
-                'min' => min($turnovers),
-                'max' => max($turnovers),
-                'avg' => round(array_sum($turnovers)/count($turnovers), 1),
+                'min' => $points ? min($turnovers) : 0,
+                'max' => $points ? max($turnovers) : 0,
+                'avg' => $points ? round(array_sum($turnovers)/count($turnovers), 1) : 0,
             ],
         ];
 

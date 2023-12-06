@@ -17,6 +17,9 @@ class NBAPlayersService
                             $stat->where('teamId', '=', NBATeam::find($params['opponentTeamId'])->nbaTeamId);
                         });
                     })
+                        ->when(isset($params['seasonType']), function ($games) use ($params) {
+                            $games->where('seasonType', '=', $params['seasonType']);
+                        })
                         ->orderBy('date', 'desc');
                 },
             ])
